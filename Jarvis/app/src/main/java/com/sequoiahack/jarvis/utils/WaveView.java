@@ -90,7 +90,7 @@ public class WaveView extends ViewGroup {
                 colorVoiceWave);
         firstCircle.setColorStroke(colorVoiceWaveStroke);
         addView(firstCircle);
-        secondCircle = new Circle(getContext(), 50 * density + 0.5f,
+        secondCircle = new Circle(getContext(), 75 * density + 0.5f,
                 colorVoiceWaveSurround);
         secondCircle.setColorStroke(colorVoiceWaveSurround);
         // addView(secondCircle);

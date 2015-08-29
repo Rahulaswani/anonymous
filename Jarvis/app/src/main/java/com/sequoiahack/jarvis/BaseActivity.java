@@ -112,6 +112,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void hideProgressDialog(ProgressDialog dialog) {
-        dialog.hide();
+        if(dialog != null) {
+            dialog.hide();
+        }
     }
 }

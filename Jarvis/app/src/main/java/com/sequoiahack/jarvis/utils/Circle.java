@@ -29,7 +29,7 @@ public class Circle extends View {
     public void setColorStroke(int colorStroke) {
         if (paintStroke == null) {
             paintStroke = new Paint();
-            paintStroke.setStrokeWidth(10);
+            paintStroke.setStrokeWidth(20);
             paintStroke.setStyle(Paint.Style.STROKE);
             paintStroke.setAntiAlias(true);
         }

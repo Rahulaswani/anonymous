@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -42,12 +44,20 @@ public class MainActivity extends BaseActivity {
 
     private void initCurrentViews() {
         relativeLayoutAnimation = (RelativeLayout) findViewById(R.id.voice_recognition_holder);
-        jarvisBackground = (ImageView) relativeLayoutAnimation.findViewById(R.id.background_image);
-        jarvisCenter = (ImageView) relativeLayoutAnimation.findViewById(R.id.inner_image);
-       // jarvisEye = (ImageView) findViewById(R.id.eye_image);
+        jarvisBackground = (ImageView) findViewById(R.id.background_image);
+        jarvisCenter = (ImageView) findViewById(R.id.inner_image);
+        jarvisCenter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopJarvis();
+                jarvisBackground.setVisibility(View.GONE);
+                jarvisCenter.setVisibility(View.GONE);
+                collapse(waveView);
+             //   overridePendingTransition(R.anim.slideup, R.anim.noanimation);
+            }
+        });
         waveView = (WaveView) findViewById(R.id.wave_view);
         waveView.setVoiceCircleColor(0x60dedede, 0x70dedede);
-        //	waveView.setVoiceSurroundColor(0x80dedede);
         waveView.setVolumeCallback(new WaveView.VolumeCallBack() {
             @Override
             public int getAmplitude() {
@@ -59,7 +69,13 @@ public class MainActivity extends BaseActivity {
     private void stopJarvis(){
         if (waveView != null) {
             handler.removeCallbacks(showWaveViewRunnable);
-            waveView.setVisibility(View.GONE);
+         //   waveView.clearAnimation(); // setVisibility(View.GONE);
+        }
+        if(jarvisBackground.getVisibility() == View.VISIBLE && jarvisCenter.getVisibility() == View.VISIBLE) {
+            jarvisBackground.clearAnimation();
+            jarvisCenter.clearAnimation();
+            jarvisBackground.setVisibility(View.GONE);
+            jarvisCenter.setVisibility(View.GONE);
         }
     }
 
@@ -107,6 +123,8 @@ public class MainActivity extends BaseActivity {
             Log.d("HomeActivity", "ERROR");
         }
         replaceFragment(new FirstFragment(), FIRST_FRAGMENT);
+     //   collapse(waveView);
+     //   overridePendingTransition(R.anim.slideup, R.anim.noanimation);
     }
 
     private void getData() {
@@ -121,5 +139,32 @@ public class MainActivity extends BaseActivity {
                 getBus().post(new ResponseList());
             }
         });
+    }
+
+    public static void collapse(final View v) {
+        final int initialHeight = v.getMeasuredHeight();
+
+        Animation a = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if(interpolatedTime == 1){
+                 //   v.setVisibility(View.GONE);
+                }else{
+                    v.getLayoutParams().height = 520; //initialHeight - (int)(initialHeight * interpolatedTime);
+                    v.getLayoutParams().width = 520;
+                    v.requestLayout();
+                }
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        a.setDuration((int)(initialHeight / v.getContext().getResources().getDisplayMetrics().density));
+     //   a.setDuration(10000);
+        v.startAnimation(a);
     }
 }
