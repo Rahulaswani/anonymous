@@ -39,7 +39,8 @@ public class MainActivity extends BaseActivity {
 
     public void onEvent(ResponseList responseList) {
         hideProgressDialog(mProgress);
-        if (responseList.getStatus().equalsIgnoreCase(AppConstants.SUCCESS)) {
+        final String status = responseList.getStatus();
+        if (status != null && status.equalsIgnoreCase(AppConstants.SUCCESS)) {
             Log.d("HomeActivity", "SUCCESS");
         } else {
             Log.d("HomeActivity", "ERROR");
@@ -50,13 +51,13 @@ public class MainActivity extends BaseActivity {
     private void getData() {
         mRestClient.search(null, null, null, null, "myCallBack", new Callback<ResponseList>() {
             @Override
-            public void success(ResponseList productList, Response response) {
-                getBus().post(productList);
+            public void success(ResponseList responseList, Response response) {
+                getBus().post(responseList);
             }
 
             @Override
             public void failure(RetrofitError error) {
-                error.printStackTrace();
+                getBus().post(new ResponseList());
             }
         });
     }

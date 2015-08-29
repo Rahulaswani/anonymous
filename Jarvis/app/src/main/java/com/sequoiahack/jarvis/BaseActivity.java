@@ -18,10 +18,13 @@ import de.greenrobot.event.EventBus;
 import retrofit.RestAdapter;
 
 import static com.sequoiahack.jarvis.utils.Api.END_POINT;
+import static com.sequoiahack.jarvis.utils.AppConstants.DEBUG;
+import static retrofit.RestAdapter.LogLevel.FULL;
+import static retrofit.RestAdapter.LogLevel.NONE;
 
 public abstract class BaseActivity extends AppCompatActivity {
     protected FrameLayout mContentHolder;
-    public JarvisRestClient mRestClient;
+    protected JarvisRestClient mRestClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +35,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         mContentHolder.removeAllViews();
         final RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(END_POINT)
+                .setLogLevel(DEBUG ? FULL : NONE)
                 .build();
-
         mRestClient = restAdapter.create(JarvisRestClient.class);
     }
 
@@ -55,29 +58,29 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    public EventBus getBus() {
+    protected EventBus getBus() {
         return EventBus.getDefault();
     }
 
-    public void registerBus() {
+    protected void registerBus() {
         registerBus(0);
     }
 
-    public void registerStickyBus() {
+    protected void registerStickyBus() {
         registerStickyBus(0);
     }
 
-    public void registerBus(int priority) {
+    protected void registerBus(int priority) {
         unregisterBus();
         getBus().register(this, priority);
     }
 
-    public void registerStickyBus(int priority) {
+    protected void registerStickyBus(int priority) {
         unregisterBus();
         getBus().registerSticky(this, priority);
     }
 
-    public void unregisterBus() {
+    protected void unregisterBus() {
         getBus().unregister(this);
     }
 
@@ -104,11 +107,11 @@ public abstract class BaseActivity extends AppCompatActivity {
                 }).create().show();
     }
 
-    public ProgressDialog showProgressBar(String title, String msg) {
+    protected ProgressDialog showProgressBar(String title, String msg) {
         return ProgressDialog.show(this, title, msg, true, true);
     }
 
-    public void hideProgressDialog(ProgressDialog dialog) {
+    protected void hideProgressDialog(ProgressDialog dialog) {
         dialog.hide();
     }
 }
