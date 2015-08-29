@@ -1,24 +1,25 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:background="#000000"
-                tools:context=".MainActivity">
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/main_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/jarvis_background"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/background_small"
-        android:layout_centerInParent="true"/>
+    <FrameLayout
+        android:id="@+id/voice_recognition_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/jarvis_center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/center_eye"
-        android:layout_centerInParent="true"/>
+        <com.sequoiahack.jarvis.widget.JarvisTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Voice Listener goes here..."/>
+    </FrameLayout>
 
-
+    <FrameLayout
+        android:id="@+id/fragment_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/voice_recognition_holder"/>
 
 </RelativeLayout>
