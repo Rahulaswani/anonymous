@@ -6,11 +6,9 @@ import android.content.Context;
 import com.sequoiahack.jarvis.BuildConfig;
 
 import de.greenrobot.event.EventBus;
-import vee.android.lib.SimpleSharedPreferences;
 
 public class JarvisApplication extends Application {
     private static Context mContext;
-    private static SimpleSharedPreferences mPreferences;
     private static JarvisApplication singleton;
     private static final String TYPEFACE_TYPE = "SERIF";
 
@@ -32,12 +30,5 @@ public class JarvisApplication extends Application {
 
     public JarvisApplication getInstance() {
         return singleton;
-    }
-
-    public static synchronized SimpleSharedPreferences getSharedPreferences() {
-        if (null == mPreferences) {
-            mPreferences = new SimpleSharedPreferences(mContext);
-        }
-        return mPreferences;
     }
 }

@@ -12,12 +12,14 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 
+import com.sequoiahack.jarvis.R;
+
 public class WaveView extends ViewGroup {
     private VolumeCallBack volumeCallback = null;
 
-    private int colorVoiceWave = 0x33ff0000; // 声音音波颜色
-    private int colorVoiceWaveStroke = 0x4dff0000; // 声音音波描边颜色
-    private int colorVoiceWaveSurround = 0xffff0000; // 声音音波外围颜色
+    private int colorVoiceWave = 0x70B1F3FF;
+    private int colorVoiceWaveStroke = 0x2B1F3FF;
+    private int colorVoiceWaveSurround = 0xfCDB3FA;
 
     private boolean isRun = false;
     private int width = 0;
@@ -48,9 +50,6 @@ public class WaveView extends ViewGroup {
         init();
     }
 
-    /**
-     * 开始特效动画
-     */
     public void startAnimation() {
         invalidate();
 
@@ -61,40 +60,29 @@ public class WaveView extends ViewGroup {
         post(timer);
     }
 
-    /**
-     * 停止特效动画
-     */
     public void stopAnimation() {
         isRun = false;
         firstCircle.clearAnimation();
         secondCircle.clearAnimation();
     }
 
-    /**
-     * 设置音频振幅回调<br/>
-     * WaveView每隔30ms会调用一次此回调，以保证动画流畅
-     */
     public void setVolumeCallback(VolumeCallBack callback) {
         volumeCallback = callback;
     }
 
     public void setVoiceCircleColor(int colorVoiceWave, int colorVoiceWaveStroke) {
         this.colorVoiceWave = colorVoiceWave;
-        this.colorVoiceWaveStroke = colorVoiceWaveStroke;
+        //	this.colorVoiceWaveStroke = colorVoiceWaveStroke;
         if (firstCircle != null) {
-            firstCircle.setColorFill(colorVoiceWave);
+            //	firstCircle.setColorFill(colorVoiceWave);
             firstCircle.setColorStroke(colorVoiceWaveStroke);
         }
     }
 
-    /**
-     * 获取音频振幅的回调接口
-     */
     public static interface VolumeCallBack {
         public int getAmplitude();
     }
 
-    // ////////////////////////////////////////////////////////////
     private void init() {
         setWillNotDraw(false);
         float density = getContext().getResources().getDisplayMetrics().density;
@@ -105,7 +93,6 @@ public class WaveView extends ViewGroup {
         secondCircle = new Circle(getContext(), 50 * density + 0.5f,
                 colorVoiceWaveSurround);
         secondCircle.setColorStroke(colorVoiceWaveSurround);
-        // TODO 暂时隐藏第二个圆
         // addView(secondCircle);
         initParticles();
     }
@@ -152,8 +139,8 @@ public class WaveView extends ViewGroup {
         //
         if (null == voicePaint) {
             voicePaint = new Paint();
-            int colorCenter = 0xffea2d3f;
-            voicePaint.setColor(colorCenter);
+            //	int colorCenter = R.color.voilet;
+            //	voicePaint.setColor(getResources().getColor(colorCenter));
             voicePaint.setAntiAlias(true);
             voiceRaduis = (int) (35 * getContext().getResources()
                     .getDisplayMetrics().density + 0.5f);
@@ -163,7 +150,7 @@ public class WaveView extends ViewGroup {
         //
         if (null == iconBitmap) {
             iconBitmap = BitmapFactory.decodeResource(getContext()
-                    .getResources(), R.drawable.qz_icon_gift_recording);
+                    .getResources(), R.drawable.eye);
         }
         Rect destRect = new Rect();
         float cx = width / 2;
@@ -199,14 +186,15 @@ public class WaveView extends ViewGroup {
             dot.alphaDecreaseRate = 0.97f;
             dot.color = colorVoiceWaveSurround;
             dot.alpha = (int) (255 * 0.6f);
-            dot.strokeWidth = 4;
+            dot.strokeWidth = 7;
             dots[i] = dot;
 
             Paint paint = new Paint();
             paint.setStyle(Paint.Style.STROKE);
             paint.setColor(dot.color);
             paint.setAlpha(dot.alpha);
-            paint.setStrokeWidth(dot.strokeWidth);
+            //	paint.setStrokeWidth(dot.strokeWidth);
+            paint.setStrokeWidth(7);
             paint.setAntiAlias(true);
             paints[i] = paint;
         }
@@ -235,7 +223,7 @@ public class WaveView extends ViewGroup {
             animation.setDuration(animateTime);
             animation.setFillAfter(true);
             animation.setInterpolator(AnimationUtils.loadInterpolator(
-                    getContext(), android.R.anim.accelerate_interpolator));
+                    getContext(), R.anim.linear_interpolator));
             firstCircle.startAnimation(animation);
             firstFrom = firstTo;
 
@@ -267,11 +255,6 @@ public class WaveView extends ViewGroup {
         }
     };
 
-    /**
-     * 设置边缘颜色
-     *
-     * @param i
-     */
     public void setVoiceSurroundColor(int color) {
         colorVoiceWaveSurround = color;
     }
