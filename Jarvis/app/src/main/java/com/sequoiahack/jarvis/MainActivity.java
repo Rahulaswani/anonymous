@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.sequoiahack.jarvis.fragments.FirstFragment;
+import com.sequoiahack.jarvis.fragments.JarvisMapFragment;
 import com.sequoiahack.jarvis.parsers.ResponseList;
 import com.sequoiahack.jarvis.utils.AppConstants;
 import com.sequoiahack.jarvis.utils.WaveView;
@@ -53,12 +54,13 @@ public class MainActivity extends BaseActivity {
                 jarvisBackground.setVisibility(View.GONE);
                 jarvisCenter.setVisibility(View.GONE);
                 moveJarvisUp(waveView);
-                replaceFragment(new FirstFragment(), "FIRST_FRAGMENT");
-                //replaceFragment(new MapFragment(), "MAP_FRAGMENT");
+               // replaceFragment(new FirstFragment(), "FIRST_FRAGMENT");
+                replaceFragment(new JarvisMapFragment(), "MAP_FRAGMENT");
                 collapse(relativeLayoutAnimation, waveView);
                 //   overridePendingTransition(R.anim.slideup, R.anim.noanimation);
             }
         });
+        startJarvis();
         waveView = (WaveView) findViewById(R.id.wave_view);
         waveView.setVoiceCircleColor(0x60dedede, 0x70dedede);
         waveView.setVolumeCallback(new WaveView.VolumeCallBack() {
@@ -72,7 +74,8 @@ public class MainActivity extends BaseActivity {
     private void stopJarvis() {
         if (waveView != null) {
             handler.removeCallbacks(showWaveViewRunnable);
-            //   waveView.clearAnimation(); // setVisibility(View.GONE);
+            waveView.stopAnimation();
+            waveView.clearAnimation(); // setVisibility(View.GONE);
         }
         if (jarvisBackground.getVisibility() == View.VISIBLE && jarvisCenter.getVisibility() == View.VISIBLE) {
             jarvisBackground.clearAnimation();
@@ -106,7 +109,7 @@ public class MainActivity extends BaseActivity {
                 AnimationUtils.loadAnimation(getApplicationContext(), R.anim.clockwise_rotation));
         jarvisCenter.startAnimation(
                 AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anticlockwise_rotation));
-        handler.removeCallbacks(showWaveViewRunnable);
+      //  handler.removeCallbacks(showWaveViewRunnable);
         handler.postDelayed(showWaveViewRunnable, 200);
     }
 
@@ -124,10 +127,10 @@ public class MainActivity extends BaseActivity {
         } else {
             Log.d("HomeActivity", "ERROR");
         }
-        //   replaceFragment(new MapFragment(), MAP_FRAGMENT);
-        //   replaceFragment(new FirstFragment(), FIRST_FRAGMENT);
-        //   collapse(waveView);
-        //   overridePendingTransition(R.anim.slideup, R.anim.noanimation);
+       //   replaceFragment(new MapFragment(), AppConstants.MAP_FRAGMENT);
+       //   replaceFragment(new FirstFragment(), AppConstants.FIRST_FRAGMENT);
+     //   collapse(waveView);
+     //   overridePendingTransition(R.anim.slideup, R.anim.noanimation);
     }
 
     private void getData() {
