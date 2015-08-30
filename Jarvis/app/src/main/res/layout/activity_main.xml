@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
     <RelativeLayout
         android:id="@+id/voice_recognition_holder"
@@ -37,24 +42,26 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>
 
-        <com.sequoiahack.jarvis.widget.JarvisTextView
-            android:layout_below="@id/wave_view"
-            android:id="@+id/jarvis_speech"
-            android:layout_marginTop="20dp"
-            android:text="Yes Master !"
-            android:textSize="20dp"
-            android:gravity="center"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
+        </RelativeLayout>
+
+    <com.sequoiahack.jarvis.widget.JarvisTextView
+        android:id="@+id/jarvis_speech"
+        android:text="Yes Master !"
+        android:textSize="20dp"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:textColor="@android:color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/fragment_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/voice_recognition_holder"
+        android:layout_below="@+id/container"
         android:background="@android:color/white"/>
 
 </RelativeLayout>
