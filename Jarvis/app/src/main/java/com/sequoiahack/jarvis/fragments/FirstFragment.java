@@ -28,6 +28,14 @@ public class FirstFragment extends Fragment {
 
     private void initViews(View view) {
         JarvisTextView textView = (JarvisTextView) view.findViewById(R.id.fragment_first_text);
-        textView.setText("Fragment 1");
+       /* textView.animate() setText();
+
+        Typewriter writer = new Typewriter(this);
+        setContentView(writer);
+*/
+        //Add a character every 150ms
+        textView.setCharacterDelay(175);
+        textView.animateText("Yes Master !");
     }
+
 }
