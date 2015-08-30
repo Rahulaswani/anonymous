@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.sequoiahack.jarvis.fragments.FirstFragment;
-import com.sequoiahack.jarvis.fragments.JarvisMapFragment;
 import com.sequoiahack.jarvis.parsers.ResponseList;
 import com.sequoiahack.jarvis.utils.AppConstants;
 import com.sequoiahack.jarvis.utils.WaveView;
@@ -54,8 +53,8 @@ public class MainActivity extends BaseActivity {
                 jarvisBackground.setVisibility(View.GONE);
                 jarvisCenter.setVisibility(View.GONE);
                 moveJarvisUp(waveView);
-               // replaceFragment(new FirstFragment(), "FIRST_FRAGMENT");
-                replaceFragment(new JarvisMapFragment(), "MAP_FRAGMENT");
+                replaceFragment(new FirstFragment(), "FIRST_FRAGMENT");
+                //replaceFragment(new JarvisMapFragment(), "MAP_FRAGMENT");
                 collapse(relativeLayoutAnimation, waveView);
                 //   overridePendingTransition(R.anim.slideup, R.anim.noanimation);
             }
@@ -109,7 +108,7 @@ public class MainActivity extends BaseActivity {
                 AnimationUtils.loadAnimation(getApplicationContext(), R.anim.clockwise_rotation));
         jarvisCenter.startAnimation(
                 AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anticlockwise_rotation));
-      //  handler.removeCallbacks(showWaveViewRunnable);
+        //  handler.removeCallbacks(showWaveViewRunnable);
         handler.postDelayed(showWaveViewRunnable, 200);
     }
 
@@ -127,10 +126,10 @@ public class MainActivity extends BaseActivity {
         } else {
             Log.d("HomeActivity", "ERROR");
         }
-       //   replaceFragment(new MapFragment(), AppConstants.MAP_FRAGMENT);
-       //   replaceFragment(new FirstFragment(), AppConstants.FIRST_FRAGMENT);
-     //   collapse(waveView);
-     //   overridePendingTransition(R.anim.slideup, R.anim.noanimation);
+        //   replaceFragment(new MapFragment(), AppConstants.MAP_FRAGMENT);
+        //   replaceFragment(new FirstFragment(), AppConstants.FIRST_FRAGMENT);
+        //   collapse(waveView);
+        //   overridePendingTransition(R.anim.slideup, R.anim.noanimation);
     }
 
     private void getData() {
@@ -154,8 +153,11 @@ public class MainActivity extends BaseActivity {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 if (interpolatedTime < 0.89) {
-                    Log.d("MainActivity", interpolatedTime + " : " + jarvisView.getHeight());
+                    //   v.setVisibility(View.GONE);
+                } else {
+                    Log.d("MainActivity", ": " + interpolatedTime+ " : "  + jarvisView.getHeight());
                     fullView.getLayoutParams().height = jarvisView.getHeight(); //initialHeight - (int)(initialHeight * interpolatedTime);
+                    fullView.getLayoutParams().width = jarvisView.getWidth();
                     fullView.requestLayout();
                 }
             }
