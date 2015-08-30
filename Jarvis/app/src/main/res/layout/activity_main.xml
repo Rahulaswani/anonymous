@@ -3,23 +3,47 @@
     android:id="@+id/main_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
 
-    <FrameLayout
+
+    <RelativeLayout
         android:id="@+id/voice_recognition_holder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:padding="8dp">
 
-        <com.sequoiahack.jarvis.widget.JarvisTextView
+        <ImageView
+            android:id="@+id/background_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/background_small"/>
+
+        <ImageView
+            android:id="@+id/inner_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/center_eye"/>
+
+        <com.sequoiahack.jarvis.utils.WaveView
+            android:id="@+id/wave_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Voice Listener goes here..."/>
-    </FrameLayout>
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/fragment_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/voice_recognition_holder"/>
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/voice_recognition_holder"
+        android:background="@android:color/white"/>
 
 </RelativeLayout>
