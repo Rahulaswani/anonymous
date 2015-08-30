@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewPropertyAnimator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Transformation;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.sequoiahack.jarvis.fragments.FirstFragment;
+import com.sequoiahack.jarvis.fragments.MapFragment;
 import com.sequoiahack.jarvis.parsers.ResponseList;
 import com.sequoiahack.jarvis.utils.AppConstants;
 import com.sequoiahack.jarvis.utils.WaveView;
@@ -23,6 +25,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import static com.sequoiahack.jarvis.utils.AppConstants.FIRST_FRAGMENT;
+import static com.sequoiahack.jarvis.utils.AppConstants.MAP_FRAGMENT;
 
 public class MainActivity extends BaseActivity {
     ProgressDialog mProgress;
@@ -52,7 +55,10 @@ public class MainActivity extends BaseActivity {
                 stopJarvis();
                 jarvisBackground.setVisibility(View.GONE);
                 jarvisCenter.setVisibility(View.GONE);
-                collapse(waveView);
+                moveJarvisUp(waveView);
+              //  replaceFragment(new FirstFragment(), FIRST_FRAGMENT);
+                replaceFragment(new MapFragment(), MAP_FRAGMENT);
+                collapse(relativeLayoutAnimation,waveView);
              //   overridePendingTransition(R.anim.slideup, R.anim.noanimation);
             }
         });
@@ -122,7 +128,8 @@ public class MainActivity extends BaseActivity {
         } else {
             Log.d("HomeActivity", "ERROR");
         }
-        replaceFragment(new FirstFragment(), FIRST_FRAGMENT);
+     //   replaceFragment(new MapFragment(), MAP_FRAGMENT);
+     //   replaceFragment(new FirstFragment(), FIRST_FRAGMENT);
      //   collapse(waveView);
      //   overridePendingTransition(R.anim.slideup, R.anim.noanimation);
     }
@@ -141,8 +148,8 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    public static void collapse(final View v) {
-        final int initialHeight = v.getMeasuredHeight();
+    private void collapse(final View fullView,final View jarvisView) {
+        final int initialHeight = fullView.getMeasuredHeight();
 
         Animation a = new Animation()
         {
@@ -151,9 +158,9 @@ public class MainActivity extends BaseActivity {
                 if(interpolatedTime == 1){
                  //   v.setVisibility(View.GONE);
                 }else{
-                    v.getLayoutParams().height = 520; //initialHeight - (int)(initialHeight * interpolatedTime);
-                    v.getLayoutParams().width = 520;
-                    v.requestLayout();
+                    fullView.getLayoutParams().height = jarvisView.getHeight(); //initialHeight - (int)(initialHeight * interpolatedTime);
+                    fullView.getLayoutParams().width = jarvisView.getWidth();
+                    fullView.requestLayout();
                 }
             }
 
@@ -163,8 +170,13 @@ public class MainActivity extends BaseActivity {
             }
         };
 
-        a.setDuration((int)(initialHeight / v.getContext().getResources().getDisplayMetrics().density));
+        a.setDuration((int)(initialHeight / fullView.getContext().getResources().getDisplayMetrics().density));
      //   a.setDuration(10000);
-        v.startAnimation(a);
+        fullView.startAnimation(a);
+    }
+
+    private void moveJarvisUp(View view){
+        // Prepare the View for the animation
+       ViewPropertyAnimator a = view.animate().translationY(-800).setDuration(700);
     }
 }
