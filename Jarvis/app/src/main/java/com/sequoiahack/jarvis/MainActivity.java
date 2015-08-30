@@ -1,8 +1,11 @@
 package com.sequoiahack.jarvis;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
@@ -18,13 +21,14 @@ import com.sequoiahack.jarvis.utils.AppConstants;
 import com.sequoiahack.jarvis.utils.WaveView;
 import com.sequoiahack.jarvis.widget.JarvisTextView;
 
+import java.util.Locale;
 import java.util.Random;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements TextToSpeech.OnInitListener {
     ProgressDialog mProgress;
     RelativeLayout relativeLayoutAnimation;
     ImageView jarvisBackground;
@@ -32,7 +36,11 @@ public class MainActivity extends BaseActivity {
     WaveView waveView;
     Handler handler = new Handler();
     Random random = new Random();
-    JarvisTextView jarvisTextView ;
+    JarvisTextView jarvisTextView;
+    private SpeechRecognizer mRecognizer;
+    public static TextToSpeech engine;
+    public static double pitch=1.0;
+    public static double speed=1.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +48,6 @@ public class MainActivity extends BaseActivity {
         setLocalContentView(R.layout.activity_main);
         initCurrentViews();
         startJarvis();
-        getData();
     }
 
     private void initCurrentViews() {
@@ -48,6 +55,7 @@ public class MainActivity extends BaseActivity {
         jarvisBackground = (ImageView) findViewById(R.id.background_image);
         jarvisCenter = (ImageView) findViewById(R.id.inner_image);
         jarvisTextView = (JarvisTextView) findViewById(R.id.jarvis_speech);
+        engine = new TextToSpeech(getApplicationContext(), this);
         jarvisBackground.startAnimation(
                 AnimationUtils.loadAnimation(getApplicationContext(), R.anim.clockwise_rotation));
         jarvisCenter.startAnimation(
@@ -145,8 +153,8 @@ public class MainActivity extends BaseActivity {
         //   overridePendingTransition(R.anim.slideup, R.anim.noanimation);
     }
 
-    private void getData() {
-        mRestClient.search(null, null, null, null, "myCallBack", new Callback<ResponseList>() {
+    private void getData(String query, double lat, double lon, String sId, String meta) {
+        mRestClient.search(query, String.valueOf(lat), String.valueOf(lon), sId, meta, "myCallBack", new Callback<ResponseList>() {
             @Override
             public void success(ResponseList responseList, Response response) {
                 getBus().post(responseList);
@@ -192,9 +200,11 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private void jarvisSpeaks(String messageToPrint){
+    private void jarvisSpeaks(String messageToPrint) {
+        mRecognizer.stopListening();
         jarvisTextView.setVisibility(View.VISIBLE);
         //Add a character every 150ms
+        speak(messageToPrint);
         jarvisTextView.setCharacterDelay(70);
         jarvisTextView.animateText(messageToPrint);
         Handler handler = new Handler();
@@ -207,5 +217,24 @@ public class MainActivity extends BaseActivity {
 
         }, 15000);
 
+    }
+
+    /**
+     * Called to signal the completion of the TextToSpeech engine initialization.
+     *
+     * @param status {@link TextToSpeech#SUCCESS} or {@link TextToSpeech#ERROR}.
+     */
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            Log.d("Speech", "Success!");
+            engine.setLanguage(Locale.ENGLISH);
+        }
+    }
+
+    public static void speak(String whatToSpeak) {
+        engine.setPitch((float) pitch);
+        engine.setSpeechRate((float) speed);
+        engine.speak(whatToSpeak, TextToSpeech.QUEUE_FLUSH, null);
     }
 }

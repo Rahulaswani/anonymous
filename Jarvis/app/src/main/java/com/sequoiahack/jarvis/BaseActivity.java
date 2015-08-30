@@ -12,7 +12,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.sequoiahack.jarvis.core.JarvisApplication;
 import com.sequoiahack.jarvis.core.JarvisRestClient;
+import com.sequoiahack.jarvis.utils.SimpleSharedPreferences;
 
 import de.greenrobot.event.EventBus;
 import retrofit.RestAdapter;
@@ -25,6 +27,7 @@ import static retrofit.RestAdapter.LogLevel.NONE;
 public abstract class BaseActivity extends AppCompatActivity {
     protected FrameLayout mContentHolder;
     protected JarvisRestClient mRestClient;
+    protected SimpleSharedPreferences mPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .setLogLevel(DEBUG ? FULL : NONE)
                 .build();
         mRestClient = restAdapter.create(JarvisRestClient.class);
+        mPref = JarvisApplication.getSharedPreferences();
     }
 
     protected void replaceFragment(Fragment fragment, String tag) {
