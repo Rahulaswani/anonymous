@@ -152,12 +152,11 @@ public class MainActivity extends BaseActivity {
         Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if (interpolatedTime < 0.89) {
+                if (jarvisView.getHeight() < 275) {
                     //   v.setVisibility(View.GONE);
                 } else {
                     Log.d("MainActivity", ": " + interpolatedTime+ " : "  + jarvisView.getHeight());
                     fullView.getLayoutParams().height = jarvisView.getHeight(); //initialHeight - (int)(initialHeight * interpolatedTime);
-                    fullView.getLayoutParams().width = jarvisView.getWidth();
                     fullView.requestLayout();
                 }
             }
