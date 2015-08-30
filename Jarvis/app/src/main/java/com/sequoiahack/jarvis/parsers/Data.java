@@ -8,27 +8,20 @@ public class Data {
 
     @Expose
     private String id;
-
     @Expose
     private String name;
-
     @SerializedName("ext_name")
     @Expose
     private String extName;
-
     @SerializedName("sub_title")
     @Expose
     private String subTitle;
-
     @Expose
     private String img;
-
     @Expose
     private Location location;
-
     @Expose
     private String timings;
-
     @Expose
     private String price;
 

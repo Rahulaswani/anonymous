@@ -2,7 +2,6 @@
 package com.sequoiahack.jarvis.parsers;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,128 +10,115 @@ public class ResponseList {
 
     @Expose
     private String status;
-
-    @SerializedName("_id")
     @Expose
-    private String Id;
-
+    private String msg;
     @Expose
-    private String message;
-
+    private String callback;
+    @Expose
+    private List<Data> data = new ArrayList<Data>();
+    @Expose
+    private String meta;
+    @Expose
+    private String sid;
     @Expose
     private Integer type;
 
-    @Expose
-    private String callback;
-
-    @Expose
-    private List<Data> data = new ArrayList<Data>();
-
     /**
-     * 
-     * @return
-     *     The status
+     * @return The status
      */
     public String getStatus() {
         return status;
     }
 
     /**
-     * 
-     * @param status
-     *     The status
+     * @param status The status
      */
     public void setStatus(String status) {
         this.status = status;
     }
 
     /**
-     * 
-     * @return
-     *     The Id
+     * @return The msg
      */
-    public String getId() {
-        return Id;
+    public String getMsg() {
+        return msg;
     }
 
     /**
-     * 
-     * @param Id
-     *     The _id
+     * @param msg The msg
      */
-    public void setId(String Id) {
-        this.Id = Id;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
     /**
-     * 
-     * @return
-     *     The message
-     */
-    public String getMessage() {
-        return message;
-    }
-
-    /**
-     * 
-     * @param message
-     *     The message
-     */
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    /**
-     * 
-     * @return
-     *     The type
-     */
-    public Integer getType() {
-        return type;
-    }
-
-    /**
-     * 
-     * @param type
-     *     The type
-     */
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    /**
-     * 
-     * @return
-     *     The callback
+     * @return The callback
      */
     public String getCallback() {
         return callback;
     }
 
     /**
-     * 
-     * @param callback
-     *     The callback
+     * @param callback The callback
      */
     public void setCallback(String callback) {
         this.callback = callback;
     }
 
     /**
-     * 
-     * @return
-     *     The data
+     * @return The data
      */
     public List<Data> getData() {
         return data;
     }
 
     /**
-     *
-     * @param data
-     *     The data
+     * @param data The data
      */
     public void setData(List<Data> data) {
         this.data = data;
     }
+
+    /**
+     * @return The meta
+     */
+    public String getMeta() {
+        return meta;
+    }
+
+    /**
+     * @param meta The meta
+     */
+    public void setMeta(String meta) {
+        this.meta = meta;
+    }
+
+    /**
+     * @return The sid
+     */
+    public String getSid() {
+        return sid;
+    }
+
+    /**
+     * @param sid The sid
+     */
+    public void setSid(String sid) {
+        this.sid = sid;
+    }
+
+    /**
+     * @return The type
+     */
+    public Integer getType() {
+        return type;
+    }
+
+    /**
+     * @param type The type
+     */
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
 }
