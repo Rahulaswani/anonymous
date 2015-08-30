@@ -32,7 +32,7 @@ public class MainActivity extends BaseActivity {
     WaveView waveView;
     Handler handler = new Handler();
     Random random = new Random();
-    JarvisTextView jarvisTextView ;
+    JarvisTextView jarvisTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,6 @@ public class MainActivity extends BaseActivity {
         setLocalContentView(R.layout.activity_main);
         initCurrentViews();
         startJarvis();
-        getData();
     }
 
     private void initCurrentViews() {
@@ -145,8 +144,8 @@ public class MainActivity extends BaseActivity {
         //   overridePendingTransition(R.anim.slideup, R.anim.noanimation);
     }
 
-    private void getData() {
-        mRestClient.search(null, null, null, null, "myCallBack", new Callback<ResponseList>() {
+    private void getData(String query, double lat, double lon, String sId, String meta) {
+        mRestClient.search(query, String.valueOf(lat), String.valueOf(lon), sId, meta, "myCallBack", new Callback<ResponseList>() {
             @Override
             public void success(ResponseList responseList, Response response) {
                 getBus().post(responseList);
@@ -192,7 +191,7 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private void jarvisSpeaks(String messageToPrint){
+    private void jarvisSpeaks(String messageToPrint) {
         jarvisTextView.setVisibility(View.VISIBLE);
         //Add a character every 150ms
         jarvisTextView.setCharacterDelay(70);
