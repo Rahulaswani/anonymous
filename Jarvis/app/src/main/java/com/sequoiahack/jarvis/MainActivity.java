@@ -16,6 +16,7 @@ import com.sequoiahack.jarvis.fragments.FirstFragment;
 import com.sequoiahack.jarvis.parsers.ResponseList;
 import com.sequoiahack.jarvis.utils.AppConstants;
 import com.sequoiahack.jarvis.utils.WaveView;
+import com.sequoiahack.jarvis.widget.JarvisTextView;
 
 import java.util.Random;
 
@@ -32,6 +33,7 @@ public class MainActivity extends BaseActivity {
     WaveView waveView;
     Handler handler = new Handler();
     Random random = new Random();
+    JarvisTextView jarvisTextView ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,11 @@ public class MainActivity extends BaseActivity {
         relativeLayoutAnimation = (RelativeLayout) findViewById(R.id.voice_recognition_holder);
         jarvisBackground = (ImageView) findViewById(R.id.background_image);
         jarvisCenter = (ImageView) findViewById(R.id.inner_image);
+        jarvisTextView = (JarvisTextView) findViewById(R.id.jarvis_speech);
+        jarvisBackground.startAnimation(
+                AnimationUtils.loadAnimation(getApplicationContext(), R.anim.clockwise_rotation));
+        jarvisCenter.startAnimation(
+                AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anticlockwise_rotation));
         jarvisCenter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,6 +63,16 @@ public class MainActivity extends BaseActivity {
                 replaceFragment(new FirstFragment(), "FIRST_FRAGMENT");
                 //replaceFragment(new JarvisMapFragment(), "MAP_FRAGMENT");
                 collapse(relativeLayoutAnimation, waveView);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        startJarvis();
+                        jarvisSpeaks("Yes Master. How my i Assist you !");
+                    }
+
+                }, 5000);
                 //   overridePendingTransition(R.anim.slideup, R.anim.noanimation);
             }
         });
@@ -104,10 +121,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void startJarvis() {
-        jarvisBackground.startAnimation(
-                AnimationUtils.loadAnimation(getApplicationContext(), R.anim.clockwise_rotation));
-        jarvisCenter.startAnimation(
-                AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anticlockwise_rotation));
         //  handler.removeCallbacks(showWaveViewRunnable);
         handler.postDelayed(showWaveViewRunnable, 200);
     }
@@ -152,7 +165,7 @@ public class MainActivity extends BaseActivity {
         Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if (jarvisView.getHeight() < 275) {
+                if (jarvisView.getHeight() < 300) {
                     //   v.setVisibility(View.GONE);
                 } else {
                     Log.d("MainActivity", ": " + interpolatedTime+ " : "  + jarvisView.getHeight());
@@ -176,5 +189,23 @@ public class MainActivity extends BaseActivity {
         // Prepare the View for the animation
         ViewPropertyAnimator a = view.animate().setDuration(700);
         jarvisCenter.setOnClickListener(null);
+
+    }
+
+    private void jarvisSpeaks(String messageToPrint){
+        jarvisTextView.setVisibility(View.VISIBLE);
+        //Add a character every 150ms
+        jarvisTextView.setCharacterDelay(175);
+        jarvisTextView.animateText(messageToPrint);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                jarvisTextView.setVisibility(View.GONE);
+            }
+
+        }, 15000);
+
     }
 }

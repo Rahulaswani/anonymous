@@ -34,8 +34,8 @@ public class FirstFragment extends Fragment {
         setContentView(writer);
 */
         //Add a character every 150ms
-        textView.setCharacterDelay(175);
-        textView.animateText("Yes Master !");
+    //    textView.setCharacterDelay(175);
+    //    textView.animateText("Yes Master !");
     }
 
 }

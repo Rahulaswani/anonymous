@@ -36,6 +36,17 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>
+
+        <com.sequoiahack.jarvis.widget.JarvisTextView
+            android:layout_below="@id/wave_view"
+            android:id="@+id/jarvis_speech"
+            android:layout_marginTop="20dp"
+            android:text="Yes Master !"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </RelativeLayout>
 
     <FrameLayout

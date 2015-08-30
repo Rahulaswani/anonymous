@@ -8,7 +8,6 @@
     <com.sequoiahack.jarvis.widget.JarvisTextView
         android:id="@+id/fragment_first_text"
         android:layout_marginTop="20dp"
-        android:text="Yes Master !"
         android:textSize="20dp"
         android:gravity="center"
         android:layout_width="match_parent"
