@@ -124,7 +124,6 @@ public class VoiceRecognitionService extends Service {
         };
         mRecognizer.setRecognitionListener(mListener);
         mRecognizer.startListening(intent);
-
     }
 
     @Override

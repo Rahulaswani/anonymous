@@ -1,8 +1,14 @@
 package com.sequoiahack.jarvis;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
@@ -11,13 +17,16 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.sequoiahack.jarvis.fragments.FirstFragment;
 import com.sequoiahack.jarvis.parsers.ResponseList;
+import com.sequoiahack.jarvis.utils.Api;
 import com.sequoiahack.jarvis.utils.AppConstants;
 import com.sequoiahack.jarvis.utils.WaveView;
 import com.sequoiahack.jarvis.widget.JarvisTextView;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import retrofit.Callback;
@@ -25,14 +34,16 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class MainActivity extends BaseActivity {
-    ProgressDialog mProgress;
-    RelativeLayout relativeLayoutAnimation;
-    ImageView jarvisBackground;
-    ImageView jarvisCenter;
-    WaveView waveView;
-    Handler handler = new Handler();
-    Random random = new Random();
-    JarvisTextView jarvisTextView;
+    private ProgressDialog mProgress;
+    private RelativeLayout relativeLayoutAnimation;
+    private ImageView jarvisBackground;
+    private ImageView jarvisCenter;
+    private WaveView waveView;
+    private Handler handler = new Handler();
+    private Random random = new Random();
+    private JarvisTextView jarvisTextView;
+    private SpeechRecognizer mRecognizer;
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +69,7 @@ public class MainActivity extends BaseActivity {
                 jarvisBackground.setVisibility(View.GONE);
                 jarvisCenter.setVisibility(View.GONE);
                 moveJarvisUp(waveView);
-            //    moveJarvisUp(jarvisTextView);
                 replaceFragment(new FirstFragment(), "FIRST_FRAGMENT");
-                //replaceFragment(new JarvisMapFragment(), "MAP_FRAGMENT");
                 collapse(relativeLayoutAnimation, waveView);
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -72,7 +81,6 @@ public class MainActivity extends BaseActivity {
                     }
 
                 }, 1000);
-                //   overridePendingTransition(R.anim.slideup, R.anim.noanimation);
             }
         });
         startJarvis();
@@ -111,6 +119,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        startVoiceRecognition();
     }
 
     @Override
@@ -120,7 +129,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void startJarvis() {
-        //  handler.removeCallbacks(showWaveViewRunnable);
         handler.postDelayed(showWaveViewRunnable, 200);
     }
 
@@ -134,14 +142,11 @@ public class MainActivity extends BaseActivity {
         hideProgressDialog(mProgress);
         final String status = responseList.getStatus();
         if (status != null && status.equalsIgnoreCase(AppConstants.SUCCESS)) {
-            Log.d("HomeActivity", "SUCCESS");
+            mPref.putString(Api.Params.META, responseList.getMeta());
+            mPref.putString(Api.Params.SID, responseList.getSid());
         } else {
             Log.d("HomeActivity", "ERROR");
         }
-        //   replaceFragment(new MapFragment(), AppConstants.MAP_FRAGMENT);
-        //   replaceFragment(new FirstFragment(), AppConstants.FIRST_FRAGMENT);
-        //   collapse(waveView);
-        //   overridePendingTransition(R.anim.slideup, R.anim.noanimation);
     }
 
     private void getData(String query, double lat, double lon, String sId, String meta) {
@@ -165,9 +170,8 @@ public class MainActivity extends BaseActivity {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 if (jarvisView.getHeight() < 450) {
-                    //   v.setVisibility(View.GONE);
+                    // DO nothing.
                 } else {
-                    Log.d("MainActivity", ": " + interpolatedTime+ " : "  + jarvisView.getHeight());
                     fullView.getLayoutParams().height = jarvisView.getHeight() + jarvisTextView.getHeight(); //initialHeight - (int)(initialHeight * interpolatedTime);
                     fullView.requestLayout();
                 }
@@ -180,12 +184,10 @@ public class MainActivity extends BaseActivity {
         };
 
         a.setDuration((int) (initialHeight / fullView.getContext().getResources().getDisplayMetrics().density));
-        //   a.setDuration(10000);
         fullView.startAnimation(a);
     }
 
     private void moveJarvisUp(View view) {
-        // Prepare the View for the animation
         ViewPropertyAnimator a = view.animate().setDuration(700);
         jarvisCenter.setOnClickListener(null);
 
@@ -193,7 +195,6 @@ public class MainActivity extends BaseActivity {
 
     private void jarvisSpeaks(String messageToPrint) {
         jarvisTextView.setVisibility(View.VISIBLE);
-        //Add a character every 150ms
         jarvisTextView.setCharacterDelay(70);
         jarvisTextView.animateText(messageToPrint);
         Handler handler = new Handler();
@@ -205,6 +206,107 @@ public class MainActivity extends BaseActivity {
             }
 
         }, 15000);
-
     }
+
+
+    private void startVoiceRecognition() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Ask Jarvis...");
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "en-IN");
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
+
+        mRecognizer = SpeechRecognizer.createSpeechRecognizer(this.getApplicationContext());
+        final RecognitionListener mListener = new RecognitionListener() {
+            @Override
+            public void onResults(Bundle results) {
+                ArrayList<String> voiceResults = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                if (voiceResults == null) {
+                    showAlert("Unable to identify your speech, please repeat again.");
+                } else {
+                    Log.d(TAG, "Printing matches: ");
+                    for (String match : voiceResults) {
+                        Log.d(TAG, match);
+                    }
+                    getDataFromServer(voiceResults.get(0));
+                }
+            }
+
+            @Override
+            public void onReadyForSpeech(Bundle params) {
+                Toast.makeText(MainActivity.this, "Ask Jarvis.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(int error) {
+                Log.d(TAG, "Error listening for speech: " + error);
+            }
+
+            @Override
+            public void onBeginningOfSpeech() {
+                Log.d(TAG, "Speech starting");
+            }
+
+            @Override
+            public void onBufferReceived(byte[] buffer) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onEndOfSpeech() {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onEvent(int eventType, Bundle params) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onPartialResults(Bundle partialResults) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onRmsChanged(float rmsdB) {
+                // TODO Auto-generated method stub
+            }
+        };
+        mRecognizer.setRecognitionListener(mListener);
+        mRecognizer.startListening(intent);
+    }
+
+    private void getDataFromServer(String query) {
+
+        final double lati = latitude != 0 ? latitude : 12.96702;
+        final double longi = longitude != 0 ? longitude : 77.595437;
+        final String sid = mPref.getString(Api.Params.SID, null);
+        final String meta = mPref.getString(Api.Params.META, null);
+
+        getData(query, lati, longi, sid, meta);
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "onDestroy");
+        mRecognizer.cancel();
+        mRecognizer.stopListening();
+        super.onDestroy();
+    }
+
+
+    protected void showAlert(String msg) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.app_name))
+                .setMessage(msg)
+                .setCancelable(false)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).create().show();
+    }
+
 }
