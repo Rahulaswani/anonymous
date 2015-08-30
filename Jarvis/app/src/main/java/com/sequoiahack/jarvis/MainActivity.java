@@ -29,7 +29,6 @@ public class MainActivity extends BaseActivity {
     RelativeLayout relativeLayoutAnimation;
     ImageView jarvisBackground;
     ImageView jarvisCenter;
-    ImageView jarvisEye;
     WaveView waveView;
     Handler handler = new Handler();
     Random random = new Random();
@@ -60,6 +59,7 @@ public class MainActivity extends BaseActivity {
                 jarvisBackground.setVisibility(View.GONE);
                 jarvisCenter.setVisibility(View.GONE);
                 moveJarvisUp(waveView);
+            //    moveJarvisUp(jarvisTextView);
                 replaceFragment(new FirstFragment(), "FIRST_FRAGMENT");
                 //replaceFragment(new JarvisMapFragment(), "MAP_FRAGMENT");
                 collapse(relativeLayoutAnimation, waveView);
@@ -69,10 +69,10 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void run() {
                         startJarvis();
-                        jarvisSpeaks("Yes Master. How my i Assist you !");
+                        jarvisSpeaks("Yes Master. How may i Assist you !");
                     }
 
-                }, 5000);
+                }, 1000);
                 //   overridePendingTransition(R.anim.slideup, R.anim.noanimation);
             }
         });
@@ -165,11 +165,11 @@ public class MainActivity extends BaseActivity {
         Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if (jarvisView.getHeight() < 300) {
+                if (jarvisView.getHeight() < 450) {
                     //   v.setVisibility(View.GONE);
                 } else {
                     Log.d("MainActivity", ": " + interpolatedTime+ " : "  + jarvisView.getHeight());
-                    fullView.getLayoutParams().height = jarvisView.getHeight(); //initialHeight - (int)(initialHeight * interpolatedTime);
+                    fullView.getLayoutParams().height = jarvisView.getHeight() + jarvisTextView.getHeight(); //initialHeight - (int)(initialHeight * interpolatedTime);
                     fullView.requestLayout();
                 }
             }
@@ -195,7 +195,7 @@ public class MainActivity extends BaseActivity {
     private void jarvisSpeaks(String messageToPrint){
         jarvisTextView.setVisibility(View.VISIBLE);
         //Add a character every 150ms
-        jarvisTextView.setCharacterDelay(175);
+        jarvisTextView.setCharacterDelay(70);
         jarvisTextView.animateText(messageToPrint);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
